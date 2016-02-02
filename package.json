@@ -1,7 +1,7 @@
 {
-  "name": "babel-angular2-app",
-  "version": "0.0.1",
-  "description": "A skeleton Angular 2 app built with babel.",
+  "name": "farmsubsidy-dds-frontend",
+  "version": "0.1.0",
+  "description": "Javascript/Angular2 frontend for farmsubsidy-dds.",
   "scripts": {
     "postinstall": "webdriver-manager update",
     "start": "gulp",
@@ -13,9 +13,9 @@
     "tdd": "karma start",
     "e2e": "npm run build && protractor"
   },
-  "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
-  "repository": "shuhei/babel-angular2-app",
-  "license": "ISC",
+  "author": "Holger Drewes <Holger.Drewes@gmail.com>",
+  "repository": "https://github.com/holgerd77/farmsubsidy-dds-frontend",
+  "license": "[Not yet determined]",
   "devDependencies": {
     "babel-core": "6.3.17",
     "babel-eslint": "^5.0.0-beta6",
@@ -46,7 +46,7 @@
     "watchify": "^3.6.1"
   },
   "dependencies": {
-    "angular2": "2.0.0-beta.0",
+    "angular2": "2.0.0-beta.2",
     "babel-polyfill": "^6.3.14",
     "es6-shim": "^0.33.13",
     "reflect-metadata": "0.1.2",
