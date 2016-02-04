@@ -44,19 +44,13 @@ Build once:
 npm run build
 ```
 
-Watch files and rebuild:
+Watch files and rebuild (uses ``http-server`` package):
 
 ```
-npm run watch
-# or
-npm start
-```
-
-The ``http-server`` package is used for preview/development:
-
-```
-npm install -g http-server
 http-server public
+gulp watch     #Browserify JS files
+gulp watch-src #Static files/SASS
+
 ```
 
 ## Testing
