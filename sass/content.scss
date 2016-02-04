@@ -1,7 +1,35 @@
-$font-stack:    Helvetica, sans-serif;
-$primary-color: #777;
+$open-color: #1d8b28;
+$fs-color: #66d471;
+$fs-light-color: #6fde7b;
+$fs-dark-color: #5bc866;
+$h-nav-color: #4a79aa;
+$common-bg-color: #fff; 
 
 body {
-  font: 100% $font-stack;
-  color: $primary-color;
+  background-color: #fff;
+}
+
+#navbar-header {
+  background-color: $common-bg-color;
+  
+  a.navbar-brand {
+    font-size: 1.5rem;
+    padding-top: 0.0rem;
+  }
+  
+  .pos1 {
+    color: $open-color;
+    font-weight: bold;
+  }
+  .pos2 {
+    color: $fs-color;
+    font-weight: bold;
+  }
+  .nav-link {
+    padding-top: .500rem;
+    color: $fs-dark-color;   
+  }
+  .active .nav-link {
+    color: $fs-dark-color;
+  }
 }
