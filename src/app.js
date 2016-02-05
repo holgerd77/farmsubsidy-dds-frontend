@@ -14,6 +14,13 @@ export class Hello {
 }
 
 @Component({
+  selector: 'test',
+  template: '<p>yodlue Test!!!</p>'
+})
+export class Test {
+}
+
+@Component({
   selector: 'ciao',
   template: '<p>{{ message }}</p>'
 })
@@ -54,5 +61,5 @@ export class Linker {
   { path: '/', component: Hello, as: 'Hello' },
   { path: '/ciao/:name', component: Ciao, as: 'Ciao' }
 ])
-export class HelloApp {
+export class FarmsubsidyDDSFrontendApp {
 }
