@@ -1,57 +1,40 @@
 {
   "name": "farmsubsidy-dds-frontend",
   "version": "0.1.0",
-  "description": "Javascript/Angular2 frontend for farmsubsidy-dds.",
+  "description": "Frontend for farmsubsidy-dds.",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "postinstall": "webdriver-manager update",
-    "start": "gulp",
-    "build": "gulp build",
-    "watch": "gulp watch",
-    "clean": "gulp clean",
-    "test": "npm run unit && npm run e2e",
-    "unit": "karma start --single-run",
-    "tdd": "karma start",
-    "e2e": "npm run build && protractor"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Holger Drewes <Holger.Drewes@gmail.com>",
-  "repository": "https://github.com/holgerd77/farmsubsidy-dds-frontend",
-  "license": "[Not yet determined]",
-  "devDependencies": {
-    "babel-core": "6.3.17",
-    "babel-eslint": "^5.0.0-beta6",
-    "babel-plugin-angular2-annotations": "^5.0.0",
-    "babel-plugin-transform-class-properties": "^6.3.13",
-    "babel-plugin-transform-decorators-legacy": "^1.3.3",
-    "babel-plugin-transform-flow-strip-types": "^6.3.15",
-    "babel-preset-es2015": "^6.3.13",
-    "babelify": "^7.2.0",
-    "babylon": "6.3.20",
-    "browserify": "^12.0.1",
-    "del": "^2.2.0",
-    "gulp": "^3.9.0",
-    "gulp-sass": "^2.1.1",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-util": "^3.0.7",
-    "http-server": "^0.8.5",
-    "jasmine-core": "^2.4.1",
-    "karma": "^0.13.15",
-    "karma-browserify": "^4.4.2",
-    "karma-jasmine": "^0.3.6",
-    "karma-phantomjs-launcher": "^0.2.1",
-    "karma-source-map-support": "^1.1.0",
-    "object-assign": "^4.0.1",
-    "phantomjs": "^1.9.19",
-    "protractor": "^3.0.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.6.1"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holgerd77/farmsubsidy-dds-frontend.git"
   },
+  "author": "Holger Drewes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/holgerd77/farmsubsidy-dds-frontend/issues"
+  },
+  "homepage": "https://github.com/holgerd77/farmsubsidy-dds-frontend#readme",
   "dependencies": {
-    "angular2": "2.0.0-beta.2",
-    "babel-polyfill": "^6.3.14",
-    "es6-shim": "^0.33.13",
-    "reflect-metadata": "0.1.2",
-    "rxjs": "^5.0.0-beta.1",
-    "zone.js": "0.5.10"
+    "jquery": "^2.2.0",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7"
+  },
+  "devDependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.1.2",
+    "script-loader": "^0.6.1",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.13"
   }
 }

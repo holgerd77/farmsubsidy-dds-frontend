@@ -13,9 +13,12 @@ bootstrap(FarmsubsidyDDSFrontendApp, [
   provide(LocationStrategy, { useClass: HashLocationStrategy })
 ]);*/
 
+require("file?name=dist/index.html!./index.html");
+
+require("!style!css!sass!./../bower_components/bootstrap/scss/bootstrap.scss");
+require("!style!css!sass!./../sass/content.scss");
+
+require("!script!./../bower_components/bootstrap/dist/js/bootstrap.min.js");
+
 import {API} from './api';
 
-$(document).ready(function() {
-  let api = new API();
-  api.loadData();
-});

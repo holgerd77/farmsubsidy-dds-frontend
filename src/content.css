@@ -1,0 +1,56 @@
+body {
+  color: #555; }
+
+#navbar-header .navbar-brand {
+  margin-right: 1.8rem; }
+  #navbar-header .navbar-brand a {
+    font-size: 1.5rem;
+    padding-top: 0.0rem; }
+#navbar-header .logo-open {
+  color: #1d8b28;
+  font-weight: bold; }
+#navbar-header .logo-fs {
+  color: #66d471;
+  font-weight: bold; }
+#navbar-header .nav-link {
+  padding-top: .500rem;
+  color: #5bc866; }
+#navbar-header .active .nav-link {
+  color: #5bc866; }
+#navbar-header button.navbar-toggler {
+  color: #1d8b28; }
+
+#search-header {
+  color: #fff;
+  background: #1d8b28;
+  border: #1d8b28; }
+  #search-header .container {
+    padding-top: 2.2rem;
+    padding-bottom: 2.5rem; }
+
+#content {
+  margin-top: 2.2rem; }
+  #content .table {
+    font-size: 0.9rem; }
+
+.search-nav-box {
+  background: #fff;
+  margin-bottom: 1rem;
+  border: 0.2rem solid #66d471; }
+  .search-nav-box .snb-head {
+    background: #66d471;
+    font-size: 1.0rem;
+    font-weight: bold;
+    color: #fff;
+    padding: 0.4rem 0.7rem 0.4rem 0.7rem; }
+  .search-nav-box .snb-items {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+    margin-bottom: 0; }
+    .search-nav-box .snb-items li {
+      line-height: 1.8rem; }
+    .search-nav-box .snb-items li.sn-active {
+      color: #5bc866;
+      font-weight: bold; }
+
+/*# sourceMappingURL=content.css.map */
