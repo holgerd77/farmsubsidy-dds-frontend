@@ -1,6 +1,6 @@
 # farmsubsidy-dds-frontend
 
-Javascript/Angular2 frontend for ``farmsubsidy-dds`` written in ``HTML5``/``ES6``.
+Frontend for ``farmsubsidy-dds`` in ``HTML``/``Bootstrap`` and ``JS``/``jQuery``.
 
 Documentation for this and associated repositories can be found at:
 
@@ -12,64 +12,42 @@ Documentation for this and associated repositories can be found at:
 
 Main runtime library dependencies:
 
-* [Angular 2](https://angular.io/)
+* [Bootstrap 4](http://v4-alpha.getbootstrap.com/)
+* [jQuery 2.2](https://jquery.com/)
 
-Main dev library dependencies:
+Main dev tools:
 
-* [Babel](https://babeljs.io/) (transpile to ``ES5``)
-* [Browserify](http://browserify.org/) (all JS stuff in one file)
-* [Gulp.js](http://gulpjs.com/) (build automation)
+* [Bower] (http://bower.io)
+* [Sass (Ruby installation)] (http://sass-lang.com/)
+* [http-server] (https://github.com/indexzero/http-server)
+* [(Gulp.js)](http://gulpjs.com/) (build automation)
 
-``Babel`` specific notes:
+### Installation
 
-- Uses Babel instead of [TypeScript](http://www.typescriptlang.org/)/[Traceur](https://github.com/google/traceur-compiler).
-- Supports class/parameter decorators and parameter type annotations with [Babel](https://github.com/babel/babel), [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) and [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plugin-angular2-annotations).
-  - **Parameter decorator is not supported because the syntax is not supported by Babel's parser.**
-
-Stub/skeleton for app layout taken from:
-
-* https://github.com/shuhei/babel-angular2-app
-
-### Installation/Build/Preview
-
-Installation with:
+Installation ``Bower`` web project dependencies (Bootstrap,...)
+from ``bower.json`` with:
 
 ```
-npm install
+bower install
 ```
 
-Build once:
+### Running the server
+
+Run the ``http-server`` from the main folder of the repository:
 
 ```
-npm run build
+http-server
 ```
 
-Watch files and rebuild (uses ``http-server`` package):
+Content is served on ``http://127.0.0.1:8080``, API is expected 
+at ``http://127.0.0.1:5000``.
+
+### Development
+
+``Sass`` sources can be compiled with:
 
 ```
-http-server public
-gulp watch     #Browserify JS files
-gulp watch-src #Static files/SASS
-
+sass sass/content.scss css/content.css
 ```
 
-## Testing
-
-Unit and e2e tests:
-
-```
-npm test
-```
-
-Unit tests:
-
-```
-npm run unit
-```
-
-e2e tests:
-
-```
-npm run e2e
-```
 
