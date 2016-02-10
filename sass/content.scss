@@ -1,9 +1,10 @@
 $open: #1d8b28;
 $fs: #66d471;
 $fs-text: #5bc866;
+$text: #555;
 
 body {
-  color:#555;
+  color:$text;
 }
 
 #navbar-header {
@@ -72,9 +73,10 @@ body {
     li {
       line-height:1.8rem;
     }
-    li.sn-active {
-      color: $fs-text;
-      font-weight: bold;
+    a {
+      color: $text;
     }
+    a.sn-active {
+      font-weight: bold;}
   }
 }

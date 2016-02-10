@@ -1,8 +1,13 @@
-var API_URL =  'http://127.0.0.1:5000/v1/'
+var API_URL =  'http://localhost:5000/v1/'
 var PAYMENTS_ENDPOINT = 'payments/'
 
+var YEARS_DEFAULT_VALUES = [
+  ['All', null],
+  ['2014', '2014']
+]
+
 var AMOUNT_DEFAULT_VALUES = [
-  ['All', ''],
+  ['All', null],
   ['> 1.000.000 €', '1000000'],
   ['> 100.000 €', '100000'],
   ['> 10.000 €', '10000'],
@@ -12,8 +17,20 @@ var AMOUNT_DEFAULT_VALUES = [
 var API = (function(API, $, undefined) {
   
   API.params = {
+    'rows': 30,
     'q': null,
-    'amount_euro_gte': ''
+    'year': null,
+    'amount_euro_gte': null,
+    'town': null,
+    'sub_payments_type': null
+  }
+  
+  API.aggs2sb = function(aggs) {
+    sb_list = [['All', null]];
+    for (var i=0; i<aggs.length; i++) {
+      sb_list.push([aggs[i]['key'], aggs[i]['key']]);
+    }
+    return sb_list;
   }
   
   API.createSearchBox = function(id, param, title, v_list) {
@@ -23,6 +40,9 @@ var API = (function(API, $, undefined) {
       var display = v_list[i][0];
       var value = v_list[i][1];
       var $a = $('<a href="#"></a>');
+      if (value === API.params[param]) {
+        $a.addClass('sn-active');
+      }
       $a.text(display);
       $a.data('value', value);
       
@@ -44,23 +64,19 @@ var API = (function(API, $, undefined) {
     $sh.appendTo($snb);
     $ul.appendTo($snb);
     
-    /*
-    <div class="search-nav-box">
-      <div class="snb-head">Amount</div>
-      
-        <li class="sn-active">All</li>
-        <li>&gt; 1.000.000 €</li>
-        <li>&gt; 100.000 €</li>
-        <li>&gt; 10.000 €</li>
-        <li>&gt; 1.000 €</li>
-    </div>*/
     $('#'+id).append($snb);
   };
   
   API.loadData = function() {
-    $.getJSON(API_URL + PAYMENTS_ENDPOINT, this.params, function(data) {
+    $.ajax({
+      url: API_URL + PAYMENTS_ENDPOINT,
+      method: 'GET',
+      cache: false,
+      dataType: 'json',
+      data: this.params
+    })
+    .success(function(data) {
       $('#payments-table tbody').empty();
-      
       
       for (var elem of data.hits.hits) {
         var item = elem._source;
@@ -68,25 +84,20 @@ var API = (function(API, $, undefined) {
         var attrs = ['name', 'zip_code', 'town', 'country', 'year', 'amount_euro'];
         for (var a of attrs) {
             var $td = $('<td></td>');
+            if (a == 'amount_euro') {
+              $td.addClass('text-xs-right');
+            }
             $td.text(item[a]);
             $td.appendTo($tr);
         }
         $('#payments-table tbody').append($tr);
       }
+      
+      API.createSearchBox('search-nav-box-towns', 'town', 'Towns', API.aggs2sb(data.aggregations.Towns.buckets));
+      API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
     });
   };
   
   return API;
 
 }(API || {}, jQuery));
-
-
-$(document).ready(function() {
-  API.createSearchBox('search-nav-box-amount', 'amount_euro_gte', 'Amount', AMOUNT_DEFAULT_VALUES);
-  API.loadData();
-
-  $('#search-btn').click(function(e) {
-    API.params['q'] = $('#search-input').val();
-    API.loadData();
-  })
-});

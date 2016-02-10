@@ -49,8 +49,9 @@ body {
     margin-bottom: 0; }
     .search-nav-box .snb-items li {
       line-height: 1.8rem; }
-    .search-nav-box .snb-items li.sn-active {
-      color: #5bc866;
+    .search-nav-box .snb-items a {
+      color: #555; }
+    .search-nav-box .snb-items a.sn-active {
       font-weight: bold; }
 
 /*# sourceMappingURL=content.css.map */

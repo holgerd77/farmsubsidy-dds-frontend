@@ -54,7 +54,10 @@
         <div class="row">
           <div class="col-xs-12 col-md-3">
             
+            <div id="search-nav-box-years"></div>
             <div id="search-nav-box-amount"></div>
+            <div id="search-nav-box-towns"></div>
+            <div id="search-nav-box-sub-payments-type"></div>
             
           </div>
            
@@ -108,6 +111,20 @@
       <script src="bower_components/jquery/dist/jquery.min.js"></script>
       <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
       <script src="js/api.js"></script>
+      
+      <script>
+      $(document).ready(function() {
+        
+        API.createSearchBox('search-nav-box-years', 'year', 'Years', YEARS_DEFAULT_VALUES);
+        API.createSearchBox('search-nav-box-amount', 'amount_euro_gte', 'Amount', AMOUNT_DEFAULT_VALUES);
+        API.loadData();
+
+        $('#search-btn').click(function(e) {
+          API.params['q'] = $('#search-input').val();
+          API.loadData();
+        })
+      });
+      </script>
     
     <footer>
       

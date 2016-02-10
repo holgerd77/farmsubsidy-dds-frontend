@@ -49,5 +49,9 @@ at ``http://127.0.0.1:5000``.
 ```
 sass sass/content.scss css/content.css
 ```
+Or you can run the ``watch`` command with:
 
+```
+sass --watch sass/content.scss:css/content.css
+```
 
