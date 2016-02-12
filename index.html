@@ -6,6 +6,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>OpenFarmsubsidies</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/flag-icon.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/content.css">
   </head>
   <body>
@@ -35,17 +37,26 @@
     
     <div class="row" id="search-header">
       <div class="container">
-        <div class="row">
-          <div class="col-xs-8 col-xs-offset-2">
+        <div class="row" style="margin-bottom:1rem;">
+          <div class="col-lg-8 col-lg-offset-2">
             <h4>Searching European Farm Subsidies since 2015.</h4>
-            <div class="input-group" style="margin-top:1rem;">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 col-lg-5 col-lg-offset-2">
+            <div class="input-group">
               <input type="text" id="search-input" class="form-control" placeholder="Search for Recipient, Town or ZIP Code">
               <span class="input-group-btn">
                 <button class="btn btn-secondary" id="search-btn" type="button">Go!</button>
               </span>
             </div>
           </div>
-        </div>    
+          <div class="col-md-5 col-lg-3">
+            <select class="c-select" id="country-select">
+              <option selected>Filter by Country</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
       
@@ -66,62 +77,65 @@
               <thead class="thead-inverse">
                 <tr>
                   <th>Recipient</th>
-                  <th class="hidden-md-down">ZIP Code</th>
+                  <th class="text-xs-center">&nbsp;</th>
+                  <th class="hidden-md-down text-xs-center">ZIP</th>
                   <th class="hidden-md-down">Town</th>
-                  <th>Country</th>
-                  <th>Year</th>
+                  <th class="text-xs-center">&nbsp;</th>
+                  <th class="hidden-md-down text-xs-center">SPs</th>
+                  <th class="text-xs-center">Year</th>
                   <th class="text-xs-right">Amount</th>
+                  <th class="text-xs-center">&nbsp;</th>
                 </tr>
               </thead>
               <ptbody/>
               <tbody id="p-table-body">
-                <!--
-                <tr>
-                  <td>Agro Business Farm Inc.</td>
-                  <td class="hidden-md-down">LH12</td>
-                  <td class="hidden-md-down">Londonderry</td>
-                  <td>GB</td>
-                  <td>2014</td>
-                  <td class="text-xs-right">1.243.938,32 €</td>
-                </tr>
-                <tr>
-                  <td>Agro Business Farm Inc.</td>
-                  <td class="hidden-md-down">LH12</td>
-                  <td class="hidden-md-down">Londonderry</td>
-                  <td>GB</td>
-                  <td>2014</td>
-                  <td class="text-xs-right">1.243.938,32 €</td>
-                </tr>
-                <tr>
-                  <td>Agro Business Farm Inc.</td>
-                  <td class="hidden-md-down">LH12</td>
-                  <td class="hidden-md-down">Londonderry</td>
-                  <td>GB</td>
-                  <td>2014</td>
-                  <td class="text-xs-right">1.243.938,32 €</td>
-                </tr>
-              -->
               </tbody>
             </table>
+            
+            <nav align="center">
+  <ul class="pagination text-xs-center">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item"><a class="page-link" href="#">4</a></li>
+    <li class="page-item"><a class="page-link" href="#">5</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+            
+            
           </div>
         </div>
       </div>
     </div>
       
+      <script src="js/tether.min.js"></script>
       <script src="bower_components/jquery/dist/jquery.min.js"></script>
       <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
       <script src="js/api.js"></script>
       
       <script>
       $(document).ready(function() {
-        
-        API.createSearchBox('search-nav-box-years', 'year', 'Years', YEARS_DEFAULT_VALUES);
-        API.createSearchBox('search-nav-box-amount', 'amount_euro_gte', 'Amount', AMOUNT_DEFAULT_VALUES);
-        API.loadData();
-
-        $('#search-btn').click(function(e) {
-          API.params['q'] = $('#search-input').val();
-          API.loadData();
+        $.ajax({
+          url: API_URL + COUNTRIES_ENDPOINT,
+          method: 'GET',
+          cache: false,
+          dataType: 'json'
+        })
+        .success(function(data) {
+          API.countries = data;
+          API.init();
         })
       });
       </script>

@@ -2,6 +2,7 @@ $open: #1d8b28;
 $fs: #66d471;
 $fs-text: #5bc866;
 $text: #555;
+$derived-amount: rgb(80, 128, 193);
 
 body {
   color:$text;
@@ -51,6 +52,10 @@ body {
   .table {
     font-size:0.9rem;
   }
+  .derived-amount {
+    color: $derived-amount;
+    font-style: italic;
+  }
 }
 
 .search-nav-box {
@@ -78,5 +83,11 @@ body {
     }
     a.sn-active {
       font-weight: bold;}
+  }
+}
+
+#payments-table {
+  a {
+    color: $text;
   }
 }

@@ -1,5 +1,6 @@
 var API_URL =  'http://localhost:5000/v1/'
 var PAYMENTS_ENDPOINT = 'payments/'
+var COUNTRIES_ENDPOINT = 'countries/'
 
 var YEARS_DEFAULT_VALUES = [
   ['All', null],
@@ -16,13 +17,39 @@ var AMOUNT_DEFAULT_VALUES = [
 
 var API = (function(API, $, undefined) {
   
+  API.countries = {}
+  
   API.params = {
     'rows': 30,
     'q': null,
     'year': null,
     'amount_euro_gte': null,
+    'country': null,
     'town': null,
     'sub_payments_type': null
+  }
+  
+  API.formatCurrency = function(val) {
+    val = parseFloat(val);
+    var n = 2, x = 3, s = ',', c = '.';
+    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+        num = val.toFixed(Math.max(0, ~~n));
+
+    return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+  }
+  
+  API.createCountrySelBox = function() {
+    $.each(API.countries, function(k, v) {
+      $o = $('<option></option>');
+      $o.attr('value', k);
+      $o.text(v.name);
+      $('#country-select').append($o);
+    });
+    $('#country-select').change(function() {
+      API.params['country'] = $('#country-select option:selected').attr('value');
+      API.loadData();
+      e.preventDefault();
+    });
   }
   
   API.aggs2sb = function(aggs) {
@@ -81,15 +108,100 @@ var API = (function(API, $, undefined) {
       for (var elem of data.hits.hits) {
         var item = elem._source;
         var $tr = $('<tr></tr>');
-        var attrs = ['name', 'zip_code', 'town', 'country', 'year', 'amount_euro'];
-        for (var a of attrs) {
-            var $td = $('<td></td>');
-            if (a == 'amount_euro') {
-              $td.addClass('text-xs-right');
-            }
-            $td.text(item[a]);
-            $td.appendTo($tr);
+        var c = API.countries[item['country']];
+        
+        var $td = $('<td></td>');
+        $td.html(item['name']);
+        $td.appendTo($tr);
+        
+        $td = $('<td class="text-xs-center"></td>');
+        var html ='<a href="' + c.data_url + '" target="_blank" ';
+        html += 'data-toggle="tooltip" data-placement="top">';
+        html += '<i class="fa fa-external-link"></i></a>';
+        $a = $(html);
+        $a.attr('title', "Source: " + c.agency_name);
+        $a.appendTo($td);
+        $td.appendTo($tr);
+        
+        $td = $('<td></td>');
+        $td.addClass('hidden-md-down');
+        $td.addClass('text-xs-center');
+        $td.text(item['zip_code']);
+        $td.appendTo($tr);
+        
+        $td = $('<td></td>');
+        $td.addClass('hidden-md-down');
+        $td.text(item['town']);
+        $td.appendTo($tr);
+        
+        $td = $('<td></td>');
+        $td.addClass('text-xs-center');
+        $td.html('<span class="flag-icon flag-icon-' + item['country'].toLowerCase() + '"></span>');
+        $td.appendTo($tr);
+        
+        $td = $('<td></td>');
+        $td.addClass('hidden-md-down text-xs-right');
+        var sps = item['sub_payments_euro'];
+        var $elem = $('<span class="label label-pill label-default">' + sps.length + '</span>');
+        if (c.nc_symbol != '') {
+          $elem.attr('data-toggle', 'popover');
+          $elem.attr('data-placement', 'top');
+          $elem.attr('data-title', 'Sub Payments');
+          if (sps.length > 0) {
+            var content = '<table class="table">'
+            $.each(sps, function(index, sp) {
+              content += '<tr>';
+              content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
+              content += '<td class="text-xs-right">';
+              content += '<span style="white-space: nowrap;';
+              if (c.nc_symbol != '') {
+                content += 'color:rgb(80, 128, 193);font-style:italic;';
+              }
+              content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
+              content += '</td>';
+              content += '</tr>';
+            });
+            content += '</table>';
+          } else {
+            var content = 'No information on sub payments available.';
+          }
+          $elem.attr('data-content', content);
         }
+        $elem.appendTo($td);
+        $td.appendTo($tr);
+        
+        $td = $('<td></td>');
+        $td.addClass('text-xs-center');
+        $td.text(item['year']);
+        $td.appendTo($tr);
+        
+        $td = $('<td></td>');
+        $td.addClass('text-xs-right');
+        var $elem = $('<span></span>');
+        $elem.html('<nobr>' + API.formatCurrency(item['amount_euro']) + ' €</nobr>');
+        if (c.nc_symbol != '') {
+          $elem.attr('data-toggle', 'popover');
+          $elem.attr('data-placement', 'top');
+          $elem.attr('data-title', 'Estimated Euro value');
+          var content = '<table class="table">'
+          content += '<tr><td>Original amount</td><td class="text-xs-right"><b>' + API.formatCurrency(item['amount_nc']) + ' ' + c.nc_sign + '</b></td></tr>';
+          content += '<tr><td>Conversion rate</td><td class="text-xs-right">' + item['nc_conv_rate'] + '</td></tr>';
+          content += '<tr><td>Date</td><td class="text-xs-right">' + item['nc_conv_date'] + '</td></tr>';
+          content += '<tr><td>Source</td><td class="text-xs-right">Fixer.io API</td></tr>';
+          content += '</table>';
+          $elem.attr('data-content', content);
+          $td.addClass('derived-amount');
+        }
+        $elem.appendTo($td);
+        $td.appendTo($tr);
+        
+        var html = '<td class="text-xs-center">';
+        html += '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
+        html += 'data-toggle="tooltip" data-placement="left" title="Search with Google">';
+        html += '<i class="fa fa-google"></i></a>';
+        html += '</td>'
+        $(html).appendTo($tr);
+        
         $('#payments-table tbody').append($tr);
       }
       
@@ -97,6 +209,27 @@ var API = (function(API, $, undefined) {
       API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
     });
   };
+  
+  API.init = function() {
+    $('body').tooltip({
+      selector: '[data-toggle="tooltip"]'
+    });
+    $('body').popover({
+      selector: '[data-toggle="popover"]',
+      html: true,
+      trigger: 'hover'
+    })
+    
+    API.createCountrySelBox();
+    API.createSearchBox('search-nav-box-years', 'year', 'Years', YEARS_DEFAULT_VALUES);
+    API.createSearchBox('search-nav-box-amount', 'amount_euro_gte', 'Amount', AMOUNT_DEFAULT_VALUES);
+    API.loadData();
+
+    $('#search-btn').click(function(e) {
+      API.params['q'] = $('#search-input').val();
+      API.loadData();
+    })
+  }
   
   return API;
 

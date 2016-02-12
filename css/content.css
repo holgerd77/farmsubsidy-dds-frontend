@@ -32,6 +32,9 @@ body {
   margin-top: 2.2rem; }
   #content .table {
     font-size: 0.9rem; }
+  #content .derived-amount {
+    color: #5080c1;
+    font-style: italic; }
 
 .search-nav-box {
   background: #fff;
@@ -53,5 +56,8 @@ body {
       color: #555; }
     .search-nav-box .snb-items a.sn-active {
       font-weight: bold; }
+
+#payments-table a {
+  color: #555; }
 
 /*# sourceMappingURL=content.css.map */
