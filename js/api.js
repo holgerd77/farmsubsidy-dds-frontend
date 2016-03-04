@@ -1,4 +1,4 @@
-var API_URL =  'http://localhost:5000/v1/'
+var API_URL =  'https://api.openfarmsubsidies.org/v1/'
 var PAYMENTS_ENDPOINT = 'payments/'
 var COUNTRIES_ENDPOINT = 'countries/'
 
