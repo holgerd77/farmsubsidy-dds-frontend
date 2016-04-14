@@ -1,4 +1,8 @@
-var API_URL =  'https://api.openfarmsubsidies.org/v1/'
+if (window.location.hostname == '127.0.0.1' || window.location.hostname == 'localhost') {
+  var API_URL =  'http://127.0.0.1:5000/v1/'
+} else {
+  var API_URL =  'https://api.openfarmsubsidies.org/v1/'
+}
 var PAYMENTS_ENDPOINT = 'payments/'
 var COUNTRIES_ENDPOINT = 'countries/'
 
@@ -111,7 +115,23 @@ var API = (function(API, $, undefined) {
         var c = API.countries[item['country']];
         
         var $td = $('<td></td>');
-        $td.html(item['name']);
+        
+        var $elem = $('<span>' + item['name'] + '</span>');
+        $elem.attr('data-toggle', 'popover');
+        $elem.attr('data-placement', 'top');
+        $elem.attr('data-title', 'Translation (en)');
+        
+        if (item['name_en']) {
+          var content = '<p>' + item['name_en'] + '</p>';
+          content += '<p style="font-size:0.6rem;">';
+          content += '<a href="http://translate.yandex.com/" target="_blank">Powered by Yandex.Translate</a>';
+          content += '</p>';
+          
+        } else {
+          var content = 'No translation available';
+        }
+        $elem.attr('data-content', content);
+        $elem.appendTo($td);
         $td.appendTo($tr);
         
         $td = $('<td class="text-xs-center"></td>');
