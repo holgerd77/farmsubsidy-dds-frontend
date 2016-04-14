@@ -215,12 +215,35 @@ var API = (function(API, $, undefined) {
         $elem.appendTo($td);
         $td.appendTo($tr);
         
-        var html = '<td class="text-xs-center">';
-        html += '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
-        html += 'data-toggle="tooltip" data-placement="left" title="Search with Google">';
-        html += '<i class="fa fa-google"></i></a>';
-        html += '</td>'
-        $(html).appendTo($tr);
+        $td = $('<td></td>');
+        var $actionDD = $('<div class="btn-group"></div>');
+        var $btn = $('<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-search"></i></button>');
+        $btn.appendTo($actionDD);
+        var $menu = $('<div class="dropdown-menu dropdown-menu-right"></div>');
+        
+        var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
+        action += 'style="font-size: 0.9rem;" class="dropdown-item">Google</a>';
+        $(action).appendTo($menu);
+        
+        if (item['name_en']) {
+          var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
+          action += 'style="font-size: 0.9rem;" class="dropdown-item">Google (en)</a>';
+          $(action).appendTo($menu);
+        }
+        
+        var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name']) + '" target="_blank"';
+        action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates</a>';
+        $(action).appendTo($menu);
+        
+        if (item['name_en']) {
+          var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
+          action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates (en)</a>';
+          $(action).appendTo($menu);
+        }
+        
+        $menu.appendTo($actionDD);
+        $actionDD.appendTo($td);
+        $td.appendTo($tr);
         
         $('#payments-table tbody').append($tr);
       }
