@@ -230,6 +230,7 @@ var API = (function(API, $, undefined) {
           action += 'style="font-size: 0.9rem;" class="dropdown-item">Google (en)</a>';
           $(action).appendTo($menu);
         }
+        $('<div class="dropdown-divider"></div>').appendTo($menu);
         
         var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name']) + '" target="_blank"';
         action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates</a>';
@@ -240,6 +241,26 @@ var API = (function(API, $, undefined) {
           action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates (en)</a>';
           $(action).appendTo($menu);
         }
+        $('<div class="dropdown-divider"></div>').appendTo($menu);
+        
+        var location = '';
+        if (item['zip_code']) {
+          location += item['zip_code'] + ' ';
+        }
+        if (item['town']) {
+          location += item['town'] + ' ';
+        }
+        if (item['region']) {
+          location += ', ' + item['region'];
+        }
+        
+        var action = '<a href="http://maps.google.com/?q=' + encodeURIComponent(location) + '" target="_blank"';
+        action += 'style="font-size: 0.9rem;" class="dropdown-item">Google Maps</a>';
+        $(action).appendTo($menu);
+        
+        var action = '<a href="https://www.openstreetmap.org/search?query=' + encodeURIComponent(location) + '" target="_blank"';
+        action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenStreetMap</a>';
+        $(action).appendTo($menu);
         
         $menu.appendTo($actionDD);
         $actionDD.appendTo($td);
