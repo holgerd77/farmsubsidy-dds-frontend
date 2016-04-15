@@ -162,31 +162,36 @@ var API = (function(API, $, undefined) {
         $td = $('<td></td>');
         $td.addClass('hidden-md-down text-xs-right');
         var sps = item['sub_payments_euro'];
-        var $elem = $('<span class="label label-pill label-default">' + sps.length + '</span>');
-        if (c.nc_symbol != '') {
-          $elem.attr('data-toggle', 'popover');
-          $elem.attr('data-placement', 'top');
-          $elem.attr('data-title', 'Sub Payments');
-          if (sps.length > 0) {
-            var content = '<table class="table">'
-            $.each(sps, function(index, sp) {
-              content += '<tr>';
-              content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
-              content += '<td class="text-xs-right">';
-              content += '<span style="white-space: nowrap;';
-              if (c.nc_symbol != '') {
-                content += 'color:rgb(80, 128, 193);font-style:italic;';
-              }
-              content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
-              content += '</td>';
-              content += '</tr>';
-            });
-            content += '</table>';
-          } else {
-            var content = 'No information on sub payments available.';
+        if (sps) {
+          var $elem = $('<span class="label label-pill label-default">' + sps.length + '</span>');
+          if (c.nc_symbol != '') {
+            $elem.attr('data-toggle', 'popover');
+            $elem.attr('data-placement', 'top');
+            $elem.attr('data-title', 'Sub Payments');
+            if (sps.length > 0) {
+              var content = '<table class="table">'
+              $.each(sps, function(index, sp) {
+                content += '<tr>';
+                content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
+                content += '<td class="text-xs-right">';
+                content += '<span style="white-space: nowrap;';
+                if (c.nc_symbol != '') {
+                  content += 'color:rgb(80, 128, 193);font-style:italic;';
+                }
+                content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
+                content += '</td>';
+                content += '</tr>';
+              });
+              content += '</table>';
+            } else {
+              var content = 'No information on sub payments available.';
+            }
+            $elem.attr('data-content', content);
           }
-          $elem.attr('data-content', content);
+        } else {
+          var $elem = $('');
         }
+        
         $elem.appendTo($td);
         $td.appendTo($tr);
         
