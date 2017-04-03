@@ -1,12 +1,12 @@
 {
-  "name": "farmsubsidy-dds-frontend",
-  "description": "Frontend for farmsubsidy-dds in HTML/Bootstrap and JS/jQuery.",
+  "name": "openfarmsubsidies-frontend",
+  "description": "Frontend for openfarmsubsidies in HTML/Bootstrap and JS/jQuery.",
   "main": "src/index.html",
   "authors": [
     "Holger Drewes <Holger.Drewes@gmail.com>"
   ],
   "license": "[Not yet determined]",
-  "homepage": "https://github.com/holgerd77/farmsubsidy-dds-frontend",
+  "homepage": "https://github.com/holgerd77/openfarmsubsidies-frontend",
   "moduleType": [
     "globals"
   ],
