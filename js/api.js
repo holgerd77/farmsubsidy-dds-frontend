@@ -8,6 +8,7 @@ var COUNTRIES_ENDPOINT = 'countries/'
 
 var YEARS_DEFAULT_VALUES = [
   ['All', null],
+  ['2015', '2015'],
   ['2014', '2014']
 ]
 
