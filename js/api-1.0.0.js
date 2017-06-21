@@ -7,6 +7,9 @@ if (window.location.hostname == '127.0.0.1' || window.location.hostname == 'loca
 var PAYMENTS_ENDPOINT = 'payments/'
 var COUNTRIES_ENDPOINT = 'countries/'
 
+var CURRENT_PAGE = 1
+var ITEMS_PER_PAGE = 30
+
 var YEARS_DEFAULT_VALUES = [
   ['All', null],
   ['2016', '2016']
@@ -32,7 +35,8 @@ var API = (function(API, $, undefined) {
   API.countries = {}
   
   API.params = {
-    'rows': 30,
+    'rows': ITEMS_PER_PAGE,
+    'start': 0,
     'q': null,
     'year': null,
     'amount_euro_gte': null,
@@ -307,8 +311,24 @@ var API = (function(API, $, undefined) {
     API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
   }
   
+  API.updatePaginationDisplay = function(numResults) {
+    if (CURRENT_PAGE == 1) {
+      $('#p_backward').addClass('disabled');
+    } else {
+      $('#p_backward').removeClass('disabled');
+    }
+    if (numResults > CURRENT_PAGE * ITEMS_PER_PAGE) {
+      $('#p_forward').removeClass('disabled');
+    } else {
+      $('#p_forward').addClass('disabled');
+    }
+    $('#p_current_page_btn').text(CURRENT_PAGE);
+    $('#pagination').show();
+  }
+  
   API.loadData = function() {
     API.params['q'] = $('#search-input').val();
+    API.params['start'] = (CURRENT_PAGE - 1) * ITEMS_PER_PAGE;
     $('#payments-table tbody').empty();
     API.showAPIMsg(USER_MSGS['LOADING']);
     
@@ -322,7 +342,9 @@ var API = (function(API, $, undefined) {
         $('#payments-table tbody').empty();
         if (data.hits.total > 0) {
           API.displaySearchResults(data);
+          API.updatePaginationDisplay(data.hits.total);
         } else {
+          $('#pagination').hide();
           API.showAPIMsg(USER_MSGS['NO_DATA']);
         }
       },
@@ -355,6 +377,17 @@ var API = (function(API, $, undefined) {
       if(e.keyCode == 13) {
         API.loadData();
       }
+    });
+    
+    $('#p_backward_btn').click(function(e) {
+      CURRENT_PAGE -= 1;
+      API.loadData();
+      e.preventDefault();
+    });
+    $('#p_forward_btn').click(function(e) {
+      CURRENT_PAGE += 1;
+      API.loadData();
+      e.preventDefault();
     });
     
   }
