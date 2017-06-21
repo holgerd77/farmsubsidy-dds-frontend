@@ -104,7 +104,7 @@ var API = (function(API, $, undefined) {
     var $tr = $('<tr></tr>');
     var msg = "Error loading the data, please try again later.";
     var $td = $('<td colspan="9" style="height:140px;vertical-align:middle;text-al">' + msg + '</td>');
-    $td.addClass('text-xs-center');
+    $td.addClass('text-center');
     $td.appendTo($tr);
     $('#payments-table tbody').append($tr);
   };
@@ -115,182 +115,182 @@ var API = (function(API, $, undefined) {
       method: 'GET',
       cache: false,
       dataType: 'json',
-      data: this.params
-    })
-    .success(function(data) {
-      $('#payments-table tbody').empty();
-      
-      for (var elem of data.hits.hits) {
-        var item = elem._source;
-        var $tr = $('<tr></tr>');
-        var c = API.countries[item['country']];
+      data: this.params,
+      success: function(data) {
+        $('#payments-table tbody').empty();
         
-        var $td = $('<td></td>');
-        
-        var $elem = $('<span>' + item['name'] + '</span>');
-        $elem.attr('data-toggle', 'popover');
-        $elem.attr('data-placement', 'top');
-        $elem.attr('data-title', 'Translation (en)');
-        
-        if (item['name_en']) {
-          var content = '<p>' + item['name_en'] + '</p>';
-          content += '<p style="font-size:0.6rem;">';
-          content += '<a href="http://translate.yandex.com/" target="_blank">Powered by Yandex.Translate</a>';
-          content += '</p>';
+        for (var elem of data.hits.hits) {
+          var item = elem._source;
+          var $tr = $('<tr></tr>');
+          var c = API.countries[item['country']];
           
-        } else {
-          var content = 'No translation available';
-        }
-        $elem.attr('data-content', content);
-        $elem.appendTo($td);
-        $td.appendTo($tr);
-        
-        $td = $('<td class="text-xs-center"></td>');
-        var html ='<a href="' + c.data_url + '" target="_blank" ';
-        html += 'data-toggle="tooltip" data-placement="top">';
-        html += '<i class="fa fa-external-link"></i></a>';
-        $a = $(html);
-        $a.attr('title', "Source: " + c.agency_name);
-        $a.appendTo($td);
-        $td.appendTo($tr);
-        
-        $td = $('<td></td>');
-        $td.addClass('hidden-md-down');
-        $td.addClass('text-xs-center');
-        $td.text(item['zip_code']);
-        $td.appendTo($tr);
-        
-        $td = $('<td></td>');
-        $td.addClass('hidden-md-down');
-        $td.text(item['town']);
-        $td.appendTo($tr);
-        
-        $td = $('<td></td>');
-        $td.addClass('text-xs-center');
-        $td.html('<span class="flag-icon flag-icon-' + item['country'].toLowerCase() + '"></span>');
-        $td.appendTo($tr);
-        
-        $td = $('<td></td>');
-        $td.addClass('hidden-md-down text-xs-right');
-        var sps = item['sub_payments_euro'];
-        if (sps) {
-          var $elem = $('<span class="label label-pill label-default">' + sps.length + '</span>');
+          var $td = $('<td></td>');
+          
+          var $elem = $('<span>' + item['name'] + '</span>');
+          $elem.attr('data-toggle', 'popover');
+          $elem.attr('data-placement', 'top');
+          $elem.attr('data-title', 'Translation (en)');
+          
+          if (item['name_en']) {
+            var content = '<p>' + item['name_en'] + '</p>';
+            content += '<p style="font-size:0.6rem;">';
+            content += '<a href="http://translate.yandex.com/" target="_blank">Powered by Yandex.Translate</a>';
+            content += '</p>';
+            
+          } else {
+            var content = 'No translation available';
+          }
+          $elem.attr('data-content', content);
+          $elem.appendTo($td);
+          $td.appendTo($tr);
+          
+          $td = $('<td class="text-center"></td>');
+          var html ='<a href="' + c.data_url + '" target="_blank" ';
+          html += 'data-toggle="tooltip" data-placement="top">';
+          html += '<i class="fa fa-external-link"></i></a>';
+          $a = $(html);
+          $a.attr('title', "Source: " + c.agency_name);
+          $a.appendTo($td);
+          $td.appendTo($tr);
+          
+          $td = $('<td></td>');
+          $td.addClass('hidden-md-down');
+          $td.addClass('text-center');
+          $td.text(item['zip_code']);
+          $td.appendTo($tr);
+          
+          $td = $('<td></td>');
+          $td.addClass('hidden-md-down');
+          $td.text(item['town']);
+          $td.appendTo($tr);
+          
+          $td = $('<td></td>');
+          $td.addClass('text-center');
+          $td.html('<span class="flag-icon flag-icon-' + item['country'].toLowerCase() + '"></span>');
+          $td.appendTo($tr);
+          
+          $td = $('<td></td>');
+          $td.addClass('hidden-md-down text-xs-right');
+          var sps = item['sub_payments_euro'];
+          if (sps) {
+            var $elem = $('<span class="label label-pill label-default">' + sps.length + '</span>');
+            if (c.nc_symbol != '') {
+              $elem.attr('data-toggle', 'popover');
+              $elem.attr('data-placement', 'top');
+              $elem.attr('data-title', 'Sub Payments');
+              if (sps.length > 0) {
+                var content = '<table class="table">'
+                $.each(sps, function(index, sp) {
+                  content += '<tr>';
+                  content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
+                  content += '<td class="text-xs-right">';
+                  content += '<span style="white-space: nowrap;';
+                  if (c.nc_symbol != '') {
+                    content += 'color:rgb(80, 128, 193);font-style:italic;';
+                  }
+                  content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
+                  content += '</td>';
+                  content += '</tr>';
+                });
+                content += '</table>';
+              } else {
+                var content = 'No information on sub payments available.';
+              }
+              $elem.attr('data-content', content);
+            }
+          } else {
+            var $elem = $('');
+          }
+          
+          $elem.appendTo($td);
+          $td.appendTo($tr);
+          
+          $td = $('<td></td>');
+          $td.addClass('text-center');
+          $td.text(item['year']);
+          $td.appendTo($tr);
+          
+          $td = $('<td></td>');
+          $td.addClass('text-xs-right');
+          var $elem = $('<span></span>');
+          $elem.html('<nobr>' + API.formatCurrency(item['amount_euro']) + ' €</nobr>');
           if (c.nc_symbol != '') {
             $elem.attr('data-toggle', 'popover');
             $elem.attr('data-placement', 'top');
-            $elem.attr('data-title', 'Sub Payments');
-            if (sps.length > 0) {
-              var content = '<table class="table">'
-              $.each(sps, function(index, sp) {
-                content += '<tr>';
-                content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
-                content += '<td class="text-xs-right">';
-                content += '<span style="white-space: nowrap;';
-                if (c.nc_symbol != '') {
-                  content += 'color:rgb(80, 128, 193);font-style:italic;';
-                }
-                content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
-                content += '</td>';
-                content += '</tr>';
-              });
-              content += '</table>';
-            } else {
-              var content = 'No information on sub payments available.';
-            }
+            $elem.attr('data-title', 'Estimated Euro value');
+            var content = '<table class="table">'
+            content += '<tr><td>Original amount</td><td class="text-xs-right"><b>' + API.formatCurrency(item['amount_nc']) + ' ' + c.nc_sign + '</b></td></tr>';
+            content += '<tr><td>Conversion rate</td><td class="text-xs-right">' + item['nc_conv_rate'] + '</td></tr>';
+            content += '<tr><td>Date</td><td class="text-xs-right">' + item['nc_conv_date'] + '</td></tr>';
+            content += '<tr><td>Source</td><td class="text-xs-right">Fixer.io API</td></tr>';
+            content += '</table>';
             $elem.attr('data-content', content);
+            $td.addClass('derived-amount');
           }
-        } else {
-          var $elem = $('');
-        }
-        
-        $elem.appendTo($td);
-        $td.appendTo($tr);
-        
-        $td = $('<td></td>');
-        $td.addClass('text-xs-center');
-        $td.text(item['year']);
-        $td.appendTo($tr);
-        
-        $td = $('<td></td>');
-        $td.addClass('text-xs-right');
-        var $elem = $('<span></span>');
-        $elem.html('<nobr>' + API.formatCurrency(item['amount_euro']) + ' €</nobr>');
-        if (c.nc_symbol != '') {
-          $elem.attr('data-toggle', 'popover');
-          $elem.attr('data-placement', 'top');
-          $elem.attr('data-title', 'Estimated Euro value');
-          var content = '<table class="table">'
-          content += '<tr><td>Original amount</td><td class="text-xs-right"><b>' + API.formatCurrency(item['amount_nc']) + ' ' + c.nc_sign + '</b></td></tr>';
-          content += '<tr><td>Conversion rate</td><td class="text-xs-right">' + item['nc_conv_rate'] + '</td></tr>';
-          content += '<tr><td>Date</td><td class="text-xs-right">' + item['nc_conv_date'] + '</td></tr>';
-          content += '<tr><td>Source</td><td class="text-xs-right">Fixer.io API</td></tr>';
-          content += '</table>';
-          $elem.attr('data-content', content);
-          $td.addClass('derived-amount');
-        }
-        $elem.appendTo($td);
-        $td.appendTo($tr);
-        
-        $td = $('<td></td>');
-        var $actionDD = $('<div class="btn-group"></div>');
-        var $btn = $('<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-search"></i></button>');
-        $btn.appendTo($actionDD);
-        var $menu = $('<div class="dropdown-menu dropdown-menu-right"></div>');
-        
-        var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
-        action += 'style="font-size: 0.9rem;" class="dropdown-item">Google</a>';
-        $(action).appendTo($menu);
-        
-        if (item['name_en']) {
-          var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
-          action += 'style="font-size: 0.9rem;" class="dropdown-item">Google (en)</a>';
+          $elem.appendTo($td);
+          $td.appendTo($tr);
+          
+          $td = $('<td></td>');
+          var $actionDD = $('<div class="btn-group"></div>');
+          var $btn = $('<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-search"></i></button>');
+          $btn.appendTo($actionDD);
+          var $menu = $('<div class="dropdown-menu dropdown-menu-right"></div>');
+          
+          var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
+          action += 'style="font-size: 0.9rem;" class="dropdown-item">Google</a>';
           $(action).appendTo($menu);
-        }
-        $('<div class="dropdown-divider"></div>').appendTo($menu);
-        
-        var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name']) + '" target="_blank"';
-        action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates</a>';
-        $(action).appendTo($menu);
-        
-        if (item['name_en']) {
-          var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
-          action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates (en)</a>';
+          
+          if (item['name_en']) {
+            var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
+            action += 'style="font-size: 0.9rem;" class="dropdown-item">Google (en)</a>';
+            $(action).appendTo($menu);
+          }
+          $('<div class="dropdown-divider"></div>').appendTo($menu);
+          
+          var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name']) + '" target="_blank"';
+          action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates</a>';
           $(action).appendTo($menu);
+          
+          if (item['name_en']) {
+            var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
+            action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates (en)</a>';
+            $(action).appendTo($menu);
+          }
+          $('<div class="dropdown-divider"></div>').appendTo($menu);
+          
+          var location = '';
+          if (item['zip_code']) {
+            location += item['zip_code'] + ' ';
+          }
+          if (item['town']) {
+            location += item['town'] + ' ';
+          }
+          if (item['region']) {
+            location += ', ' + item['region'];
+          }
+          
+          var action = '<a href="http://maps.google.com/?q=' + encodeURIComponent(location) + '" target="_blank"';
+          action += 'style="font-size: 0.9rem;" class="dropdown-item">Google Maps</a>';
+          $(action).appendTo($menu);
+          
+          var action = '<a href="https://www.openstreetmap.org/search?query=' + encodeURIComponent(location) + '" target="_blank"';
+          action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenStreetMap</a>';
+          $(action).appendTo($menu);
+          
+          $menu.appendTo($actionDD);
+          $actionDD.appendTo($td);
+          $td.appendTo($tr);
+          
+          $('#payments-table tbody').append($tr);
         }
-        $('<div class="dropdown-divider"></div>').appendTo($menu);
         
-        var location = '';
-        if (item['zip_code']) {
-          location += item['zip_code'] + ' ';
-        }
-        if (item['town']) {
-          location += item['town'] + ' ';
-        }
-        if (item['region']) {
-          location += ', ' + item['region'];
-        }
-        
-        var action = '<a href="http://maps.google.com/?q=' + encodeURIComponent(location) + '" target="_blank"';
-        action += 'style="font-size: 0.9rem;" class="dropdown-item">Google Maps</a>';
-        $(action).appendTo($menu);
-        
-        var action = '<a href="https://www.openstreetmap.org/search?query=' + encodeURIComponent(location) + '" target="_blank"';
-        action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenStreetMap</a>';
-        $(action).appendTo($menu);
-        
-        $menu.appendTo($actionDD);
-        $actionDD.appendTo($td);
-        $td.appendTo($tr);
-        
-        $('#payments-table tbody').append($tr);
+        API.createSearchBox('search-nav-box-towns', 'town', 'Towns', API.aggs2sb(data.aggregations.Towns.buckets));
+        API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
+      },
+      fail: function() {
+        API.showAPIErrorMsg();
       }
-      
-      API.createSearchBox('search-nav-box-towns', 'town', 'Towns', API.aggs2sb(data.aggregations.Towns.buckets));
-      API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
     })
-    .fail(function() {
-      API.showAPIErrorMsg();
-    });
   };
   
   API.init = function() {
