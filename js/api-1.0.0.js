@@ -63,6 +63,7 @@ var API = (function(API, $, undefined) {
     });
     $('#country-select').change(function() {
       API.params['country'] = $('#country-select option:selected').attr('value');
+      CURRENT_PAGE = 1;
       API.loadData();
       e.preventDefault();
     });
@@ -92,6 +93,7 @@ var API = (function(API, $, undefined) {
       $a.click(function(e) {
         API.params[param] = $(this).data('value');
         API.createSearchBox(id, param, title, v_list);
+        CURRENT_PAGE = 1;
         API.loadData();
         e.preventDefault();
       })
@@ -370,11 +372,13 @@ var API = (function(API, $, undefined) {
     API.loadData();
 
     $('#search-btn').click(function(e) {
+      CURRENT_PAGE = 1;
       API.loadData();
     });
     
     $('#search-input').keyup(function(e){
       if(e.keyCode == 13) {
+        CURRENT_PAGE = 1;
         API.loadData();
       }
     });
