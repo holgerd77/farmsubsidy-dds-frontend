@@ -109,6 +109,113 @@ var API = (function(API, $, undefined) {
     $('#payments-table tbody').append($tr);
   };
   
+  API.getSPSDisplayElem = function(item) {
+    var c = API.countries[item['country']];
+    var sps = item['sub_payments_euro'];
+    
+    if (sps) {
+      var $elem = $('<span class="badge badge-pill badge-default">' + sps.length + '</span>');
+      if (c.nc_symbol != '') {
+        $elem.attr('data-toggle', 'popover');
+        $elem.attr('data-placement', 'top');
+        $elem.attr('data-title', 'Sub Payments');
+        if (sps.length > 0) {
+          var content = '<table class="table">'
+          $.each(sps, function(index, sp) {
+            content += '<tr>';
+            content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
+            content += '<td class="text-right">';
+            content += '<span style="white-space: nowrap;';
+            if (c.nc_symbol != '') {
+              content += 'color:rgb(80, 128, 193);font-style:italic;';
+            }
+            content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
+            content += '</td>';
+            content += '</tr>';
+          });
+          content += '</table>';
+        } else {
+          var content = 'No information on sub payments available.';
+        }
+        $elem.attr('data-content', content);
+      }
+    } else {
+      var $elem = $('');
+    }
+    return $elem;
+  };
+  
+  API.getAmountDisplayElem = function(item) {
+    var c = API.countries[item['country']];
+    
+    var $elem = $('<span></span>');
+    $elem.html('<nobr>' + API.formatCurrency(item['amount_euro']) + ' €</nobr>');
+    if (c.nc_symbol != '') {
+      $elem.attr('data-toggle', 'popover');
+      $elem.attr('data-placement', 'top');
+      $elem.attr('data-title', 'Estimated Euro value');
+      var content = '<table class="table">'
+      content += '<tr><td>Original amount</td><td class="text-right"><b>' + API.formatCurrency(item['amount_nc']) + ' ' + c.nc_sign + '</b></td></tr>';
+      content += '<tr><td>Conversion rate</td><td class="text-right">' + item['nc_conv_rate'] + '</td></tr>';
+      content += '<tr><td>Date</td><td class="text-right">' + item['nc_conv_date'] + '</td></tr>';
+      content += '<tr><td>Source</td><td class="text-right">Fixer.io API</td></tr>';
+      content += '</table>';
+      $elem.attr('data-content', content);
+    }
+    return $elem;
+  };
+  
+  API.getActionDDDisplayElem = function(item) {
+    var $actionDD = $('<div class="btn-group"></div>');
+    var $btn = $('<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-search"></i></button>');
+    $btn.appendTo($actionDD);
+    var $menu = $('<div class="dropdown-menu dropdown-menu-right"></div>');
+    
+    var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
+    action += 'style="font-size: 0.9rem;" class="dropdown-item">Google</a>';
+    $(action).appendTo($menu);
+    
+    if (item['name_en']) {
+      var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
+      action += 'style="font-size: 0.9rem;" class="dropdown-item">Google (en)</a>';
+      $(action).appendTo($menu);
+    }
+    $('<div class="dropdown-divider"></div>').appendTo($menu);
+    
+    var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name']) + '" target="_blank"';
+    action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates</a>';
+    $(action).appendTo($menu);
+    
+    if (item['name_en']) {
+      var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
+      action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates (en)</a>';
+      $(action).appendTo($menu);
+    }
+    $('<div class="dropdown-divider"></div>').appendTo($menu);
+    
+    var location = '';
+    if (item['zip_code']) {
+      location += item['zip_code'] + ' ';
+    }
+    if (item['town']) {
+      location += item['town'] + ' ';
+    }
+    if (item['region']) {
+      location += ', ' + item['region'];
+    }
+    
+    var action = '<a href="http://maps.google.com/?q=' + encodeURIComponent(location) + '" target="_blank"';
+    action += 'style="font-size: 0.9rem;" class="dropdown-item">Google Maps</a>';
+    $(action).appendTo($menu);
+    
+    var action = '<a href="https://www.openstreetmap.org/search?query=' + encodeURIComponent(location) + '" target="_blank"';
+    action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenStreetMap</a>';
+    $(action).appendTo($menu);
+    
+    $menu.appendTo($actionDD);
+    return $actionDD;
+  }
+  
   API.loadData = function() {
     $.ajax({
       url: API_URL + PAYMENTS_ENDPOINT,
@@ -172,36 +279,7 @@ var API = (function(API, $, undefined) {
           $td = $('<td></td>');
           $td.addClass('hidden-md-down text-right');
           
-          var sps = item['sub_payments_euro'];
-          if (sps) {
-            var $elem = $('<span class="label label-pill label-default">' + sps.length + '</span>');
-            if (c.nc_symbol != '') {
-              $elem.attr('data-toggle', 'popover');
-              $elem.attr('data-placement', 'top');
-              $elem.attr('data-title', 'Sub Payments');
-              if (sps.length > 0) {
-                var content = '<table class="table">'
-                $.each(sps, function(index, sp) {
-                  content += '<tr>';
-                  content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
-                  content += '<td class="text-right">';
-                  content += '<span style="white-space: nowrap;';
-                  if (c.nc_symbol != '') {
-                    content += 'color:rgb(80, 128, 193);font-style:italic;';
-                  }
-                  content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
-                  content += '</td>';
-                  content += '</tr>';
-                });
-                content += '</table>';
-              } else {
-                var content = 'No information on sub payments available.';
-              }
-              $elem.attr('data-content', content);
-            }
-          } else {
-            var $elem = $('');
-          }
+          var $elem = API.getSPSDisplayElem(item);
           
           $elem.appendTo($td);
           $td.appendTo($tr);
@@ -213,72 +291,15 @@ var API = (function(API, $, undefined) {
           
           $td = $('<td></td>');
           $td.addClass('text-right');
-          var $elem = $('<span></span>');
-          $elem.html('<nobr>' + API.formatCurrency(item['amount_euro']) + ' €</nobr>');
+          var $elem = API.getAmountDisplayElem(item);
           if (c.nc_symbol != '') {
-            $elem.attr('data-toggle', 'popover');
-            $elem.attr('data-placement', 'top');
-            $elem.attr('data-title', 'Estimated Euro value');
-            var content = '<table class="table">'
-            content += '<tr><td>Original amount</td><td class="text-right"><b>' + API.formatCurrency(item['amount_nc']) + ' ' + c.nc_sign + '</b></td></tr>';
-            content += '<tr><td>Conversion rate</td><td class="text-right">' + item['nc_conv_rate'] + '</td></tr>';
-            content += '<tr><td>Date</td><td class="text-right">' + item['nc_conv_date'] + '</td></tr>';
-            content += '<tr><td>Source</td><td class="text-right">Fixer.io API</td></tr>';
-            content += '</table>';
-            $elem.attr('data-content', content);
             $td.addClass('derived-amount');
           }
           $elem.appendTo($td);
           $td.appendTo($tr);
           
           $td = $('<td></td>');
-          var $actionDD = $('<div class="btn-group"></div>');
-          var $btn = $('<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-search"></i></button>');
-          $btn.appendTo($actionDD);
-          var $menu = $('<div class="dropdown-menu dropdown-menu-right"></div>');
-          
-          var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
-          action += 'style="font-size: 0.9rem;" class="dropdown-item">Google</a>';
-          $(action).appendTo($menu);
-          
-          if (item['name_en']) {
-            var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
-            action += 'style="font-size: 0.9rem;" class="dropdown-item">Google (en)</a>';
-            $(action).appendTo($menu);
-          }
-          $('<div class="dropdown-divider"></div>').appendTo($menu);
-          
-          var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name']) + '" target="_blank"';
-          action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates</a>';
-          $(action).appendTo($menu);
-          
-          if (item['name_en']) {
-            var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
-            action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates (en)</a>';
-            $(action).appendTo($menu);
-          }
-          $('<div class="dropdown-divider"></div>').appendTo($menu);
-          
-          var location = '';
-          if (item['zip_code']) {
-            location += item['zip_code'] + ' ';
-          }
-          if (item['town']) {
-            location += item['town'] + ' ';
-          }
-          if (item['region']) {
-            location += ', ' + item['region'];
-          }
-          
-          var action = '<a href="http://maps.google.com/?q=' + encodeURIComponent(location) + '" target="_blank"';
-          action += 'style="font-size: 0.9rem;" class="dropdown-item">Google Maps</a>';
-          $(action).appendTo($menu);
-          
-          var action = '<a href="https://www.openstreetmap.org/search?query=' + encodeURIComponent(location) + '" target="_blank"';
-          action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenStreetMap</a>';
-          $(action).appendTo($menu);
-          
-          $menu.appendTo($actionDD);
+          var $actionDD = API.getActionDDDisplayElem(item);
           $actionDD.appendTo($td);
           $td.appendTo($tr);
           
