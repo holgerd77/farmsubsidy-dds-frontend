@@ -20,6 +20,13 @@ var AMOUNT_DEFAULT_VALUES = [
   ['> 1.000 €', '1000']
 ]
 
+
+var USER_MSGS = {
+  'LOADING'           : "Loading, please wait...", 
+  'NO_DATA'           : "No subsidies found for this filter selection.",
+  'API_NOT_AVAILABLE' : "Error loading the data, please try again later."
+}
+
 var API = (function(API, $, undefined) {
   
   API.countries = {}
@@ -99,11 +106,10 @@ var API = (function(API, $, undefined) {
     $('#'+id).append($snb);
   };
   
-  API.showAPIErrorMsg = function() {
+  API.showAPIMsg = function(msg) {
     $('#payments-table tbody').empty();
     var $tr = $('<tr></tr>');
-    var msg = "Error loading the data, please try again later.";
-    var $td = $('<td colspan="9" style="height:140px;vertical-align:middle;text-al">' + msg + '</td>');
+    var $td = $('<td colspan="9" style="height:240px;vertical-align:middle;">' + msg + '</td>');
     $td.addClass('text-center');
     $td.appendTo($tr);
     $('#payments-table tbody').append($tr);
@@ -216,7 +222,96 @@ var API = (function(API, $, undefined) {
     return $actionDD;
   }
   
+  API.displaySearchResults = function(data) {
+    for (var elem of data.hits.hits) {
+      var item = elem._source;
+      var $tr = $('<tr></tr>');
+      var c = API.countries[item['country']];
+      
+      var $td = $('<td></td>');
+      
+      var $elem = $('<span>' + item['name'] + '</span>');
+      $elem.attr('data-toggle', 'popover');
+      $elem.attr('data-placement', 'top');
+      $elem.attr('data-title', 'Translation (en)');
+      
+      if (item['name_en']) {
+        var content = '<p>' + item['name_en'] + '</p>';
+        content += '<p style="font-size:0.6rem;">';
+        content += '<a href="http://translate.yandex.com/" target="_blank">Powered by Yandex.Translate</a>';
+        content += '</p>';
+        
+      } else {
+        var content = 'No translation available';
+      }
+      $elem.attr('data-content', content);
+      $elem.appendTo($td);
+      $td.appendTo($tr);
+      
+      $td = $('<td class="text-center"></td>');
+      var html ='<a href="' + c.data_url + '" target="_blank" ';
+      html += 'data-toggle="tooltip" data-placement="top">';
+      html += '<i class="fa fa-external-link"></i></a>';
+      $a = $(html);
+      $a.attr('title', "Source: " + c.agency_name);
+      $a.appendTo($td);
+      $td.appendTo($tr);
+      
+      $td = $('<td></td>');
+      $td.addClass('hidden-md-down');
+      $td.addClass('text-center');
+      $td.text(item['zip_code']);
+      $td.appendTo($tr);
+      
+      $td = $('<td></td>');
+      $td.addClass('hidden-md-down');
+      $td.text(item['town']);
+      $td.appendTo($tr);
+      
+      $td = $('<td></td>');
+      $td.addClass('text-center');
+      $td.html('<span class="flag-icon flag-icon-' + item['country'].toLowerCase() + '"></span>');
+      $td.appendTo($tr);
+      
+      $td = $('<td></td>');
+      $td.addClass('hidden-md-down text-right');
+      
+      var $elem = API.getSPSDisplayElem(item);
+      
+      $elem.appendTo($td);
+      $td.appendTo($tr);
+      
+      $td = $('<td></td>');
+      $td.addClass('text-center');
+      $td.text(item['year']);
+      $td.appendTo($tr);
+      
+      $td = $('<td></td>');
+      $td.addClass('text-right');
+      var $elem = API.getAmountDisplayElem(item);
+      if (c.nc_symbol != '') {
+        $td.addClass('derived-amount');
+      }
+      $elem.appendTo($td);
+      $td.appendTo($tr);
+      
+      $td = $('<td></td>');
+      var $actionDD = API.getActionDDDisplayElem(item);
+      $actionDD.appendTo($td);
+      $td.appendTo($tr);
+      
+      $('#payments-table tbody').append($tr);
+    }
+    
+    API.createSearchBox('search-nav-box-towns', 'town', 'Towns', API.aggs2sb(data.aggregations.Towns.buckets));
+    API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
+  }
+  
   API.loadData = function() {
+    API.params['q'] = $('#search-input').val();
+    $('#payments-table tbody').empty();
+    API.showAPIMsg(USER_MSGS['LOADING']);
+    
     $.ajax({
       url: API_URL + PAYMENTS_ENDPOINT,
       method: 'GET',
@@ -225,92 +320,14 @@ var API = (function(API, $, undefined) {
       data: this.params,
       success: function(data) {
         $('#payments-table tbody').empty();
-        
-        for (var elem of data.hits.hits) {
-          var item = elem._source;
-          var $tr = $('<tr></tr>');
-          var c = API.countries[item['country']];
-          
-          var $td = $('<td></td>');
-          
-          var $elem = $('<span>' + item['name'] + '</span>');
-          $elem.attr('data-toggle', 'popover');
-          $elem.attr('data-placement', 'top');
-          $elem.attr('data-title', 'Translation (en)');
-          
-          if (item['name_en']) {
-            var content = '<p>' + item['name_en'] + '</p>';
-            content += '<p style="font-size:0.6rem;">';
-            content += '<a href="http://translate.yandex.com/" target="_blank">Powered by Yandex.Translate</a>';
-            content += '</p>';
-            
-          } else {
-            var content = 'No translation available';
-          }
-          $elem.attr('data-content', content);
-          $elem.appendTo($td);
-          $td.appendTo($tr);
-          
-          $td = $('<td class="text-center"></td>');
-          var html ='<a href="' + c.data_url + '" target="_blank" ';
-          html += 'data-toggle="tooltip" data-placement="top">';
-          html += '<i class="fa fa-external-link"></i></a>';
-          $a = $(html);
-          $a.attr('title', "Source: " + c.agency_name);
-          $a.appendTo($td);
-          $td.appendTo($tr);
-          
-          $td = $('<td></td>');
-          $td.addClass('hidden-md-down');
-          $td.addClass('text-center');
-          $td.text(item['zip_code']);
-          $td.appendTo($tr);
-          
-          $td = $('<td></td>');
-          $td.addClass('hidden-md-down');
-          $td.text(item['town']);
-          $td.appendTo($tr);
-          
-          $td = $('<td></td>');
-          $td.addClass('text-center');
-          $td.html('<span class="flag-icon flag-icon-' + item['country'].toLowerCase() + '"></span>');
-          $td.appendTo($tr);
-          
-          $td = $('<td></td>');
-          $td.addClass('hidden-md-down text-right');
-          
-          var $elem = API.getSPSDisplayElem(item);
-          
-          $elem.appendTo($td);
-          $td.appendTo($tr);
-          
-          $td = $('<td></td>');
-          $td.addClass('text-center');
-          $td.text(item['year']);
-          $td.appendTo($tr);
-          
-          $td = $('<td></td>');
-          $td.addClass('text-right');
-          var $elem = API.getAmountDisplayElem(item);
-          if (c.nc_symbol != '') {
-            $td.addClass('derived-amount');
-          }
-          $elem.appendTo($td);
-          $td.appendTo($tr);
-          
-          $td = $('<td></td>');
-          var $actionDD = API.getActionDDDisplayElem(item);
-          $actionDD.appendTo($td);
-          $td.appendTo($tr);
-          
-          $('#payments-table tbody').append($tr);
+        if (data.hits.total > 0) {
+          API.displaySearchResults(data);
+        } else {
+          API.showAPIMsg(USER_MSGS['NO_DATA']);
         }
-        
-        API.createSearchBox('search-nav-box-towns', 'town', 'Towns', API.aggs2sb(data.aggregations.Towns.buckets));
-        API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
       },
       fail: function() {
-        API.showAPIErrorMsg();
+        API.showAPIMsg(USER_MSGS['API_NOT_AVAILABLE']);
       }
     })
   };
@@ -331,9 +348,15 @@ var API = (function(API, $, undefined) {
     API.loadData();
 
     $('#search-btn').click(function(e) {
-      API.params['q'] = $('#search-input').val();
       API.loadData();
-    })
+    });
+    
+    $('#search-input').keyup(function(e){
+      if(e.keyCode == 13) {
+        API.loadData();
+      }
+    });
+    
   }
   
   return API;
