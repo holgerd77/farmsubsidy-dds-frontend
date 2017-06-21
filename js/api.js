@@ -99,6 +99,16 @@ var API = (function(API, $, undefined) {
     $('#'+id).append($snb);
   };
   
+  API.showAPIErrorMsg = function() {
+    $('#payments-table tbody').empty();
+    var $tr = $('<tr></tr>');
+    var msg = "Error loading the data, please try again later.";
+    var $td = $('<td colspan="9" style="height:140px;vertical-align:middle;text-al">' + msg + '</td>');
+    $td.addClass('text-xs-center');
+    $td.appendTo($tr);
+    $('#payments-table tbody').append($tr);
+  };
+  
   API.loadData = function() {
     $.ajax({
       url: API_URL + PAYMENTS_ENDPOINT,
@@ -277,6 +287,9 @@ var API = (function(API, $, undefined) {
       
       API.createSearchBox('search-nav-box-towns', 'town', 'Towns', API.aggs2sb(data.aggregations.Towns.buckets));
       API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
+    })
+    .fail(function() {
+      API.showAPIErrorMsg();
     });
   };
   

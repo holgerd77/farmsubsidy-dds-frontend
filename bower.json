@@ -1,6 +1,6 @@
 {
   "name": "openfarmsubsidies-frontend",
-  "description": "Frontend for openfarmsubsidies in HTML/Bootstrap and JS/jQuery.",
+  "description": "Frontend for OpenFarmsubsidies in HTML/Bootstrap and JS/jQuery.",
   "main": "src/index.html",
   "authors": [
     "Holger Drewes <Holger.Drewes@gmail.com>"

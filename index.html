@@ -137,6 +137,9 @@
           API.countries = data;
           API.init();
         })
+        .fail(function() {
+          API.showAPIErrorMsg();
+        })
       });
       </script>
     
