@@ -39,7 +39,7 @@ body {
 .search-nav-box {
   background: #fff;
   margin-bottom: 1rem;
-  border: 0.2rem solid #66d471; }
+  border: 3px solid #66d471; }
   .search-nav-box .snb-head {
     background: #66d471;
     font-size: 1.0rem;

@@ -1,5 +1,6 @@
 if (window.location.hostname == '127.0.0.1' || window.location.hostname == 'localhost') {
-  var API_URL =  'http://127.0.0.1:5000/v1/'
+  //var API_URL =  'http://127.0.0.1:5000/v1/'
+  var API_URL =  'https://api.openfarmsubsidies.org/v1/'
 } else {
   var API_URL =  'https://api.openfarmsubsidies.org/v1/'
 }
@@ -8,8 +9,7 @@ var COUNTRIES_ENDPOINT = 'countries/'
 
 var YEARS_DEFAULT_VALUES = [
   ['All', null],
-  ['2015', '2015'],
-  ['2014', '2014']
+  ['2016', '2016']
 ]
 
 var AMOUNT_DEFAULT_VALUES = [
@@ -170,7 +170,8 @@ var API = (function(API, $, undefined) {
           $td.appendTo($tr);
           
           $td = $('<td></td>');
-          $td.addClass('hidden-md-down text-xs-right');
+          $td.addClass('hidden-md-down text-right');
+          
           var sps = item['sub_payments_euro'];
           if (sps) {
             var $elem = $('<span class="label label-pill label-default">' + sps.length + '</span>');
@@ -183,7 +184,7 @@ var API = (function(API, $, undefined) {
                 $.each(sps, function(index, sp) {
                   content += '<tr>';
                   content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
-                  content += '<td class="text-xs-right">';
+                  content += '<td class="text-right">';
                   content += '<span style="white-space: nowrap;';
                   if (c.nc_symbol != '') {
                     content += 'color:rgb(80, 128, 193);font-style:italic;';
@@ -211,7 +212,7 @@ var API = (function(API, $, undefined) {
           $td.appendTo($tr);
           
           $td = $('<td></td>');
-          $td.addClass('text-xs-right');
+          $td.addClass('text-right');
           var $elem = $('<span></span>');
           $elem.html('<nobr>' + API.formatCurrency(item['amount_euro']) + ' €</nobr>');
           if (c.nc_symbol != '') {
@@ -219,10 +220,10 @@ var API = (function(API, $, undefined) {
             $elem.attr('data-placement', 'top');
             $elem.attr('data-title', 'Estimated Euro value');
             var content = '<table class="table">'
-            content += '<tr><td>Original amount</td><td class="text-xs-right"><b>' + API.formatCurrency(item['amount_nc']) + ' ' + c.nc_sign + '</b></td></tr>';
-            content += '<tr><td>Conversion rate</td><td class="text-xs-right">' + item['nc_conv_rate'] + '</td></tr>';
-            content += '<tr><td>Date</td><td class="text-xs-right">' + item['nc_conv_date'] + '</td></tr>';
-            content += '<tr><td>Source</td><td class="text-xs-right">Fixer.io API</td></tr>';
+            content += '<tr><td>Original amount</td><td class="text-right"><b>' + API.formatCurrency(item['amount_nc']) + ' ' + c.nc_sign + '</b></td></tr>';
+            content += '<tr><td>Conversion rate</td><td class="text-right">' + item['nc_conv_rate'] + '</td></tr>';
+            content += '<tr><td>Date</td><td class="text-right">' + item['nc_conv_date'] + '</td></tr>';
+            content += '<tr><td>Source</td><td class="text-right">Fixer.io API</td></tr>';
             content += '</table>';
             $elem.attr('data-content', content);
             $td.addClass('derived-amount');
