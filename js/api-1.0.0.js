@@ -45,6 +45,20 @@ var API = (function(API, $, undefined) {
     'sub_payments_type': null
   }
   
+  API.getUrlParameter = function(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+      if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined ? true : sParameterName[1];
+      }
+    }
+  }
+  
   API.formatCurrency = function(val) {
     val = parseFloat(val);
     var n = 2, x = 3, s = ',', c = '.';
