@@ -79,7 +79,7 @@ var API = (function(API, $, undefined) {
   
   API.createSearchBox = function(id, param, title, v_list) {
     $('#'+id).empty();
-    var $ul = $('<ul class="list-unstyled snb-items"></ul>');
+    var $ul = $('<ul class="list-unstyled snb-items collapse show" id="sb-choices-' + id + '"></ul>');
     for (var i=0; i<v_list.length; i++) {
       var display = v_list[i][0];
       var value = v_list[i][1];
@@ -103,7 +103,9 @@ var API = (function(API, $, undefined) {
       $li.appendTo($ul);
     }
     var $sh = $('<div class="snb-head"></di>');
-    $sh.text(title);
+    var titleHTML = '<a data-toggle="collapse" href="#sb-choices-' + id + '" aria-expanded="true">';
+    titleHTML += title + '<span style="float:right;"><i class="fa fa-caret-down"></i></span></a>';
+    $sh.html(titleHTML);
     
     var $snb = $('<div class="search-nav-box"></div>');
     $sh.appendTo($snb);
@@ -311,6 +313,10 @@ var API = (function(API, $, undefined) {
     
     API.createSearchBox('search-nav-box-towns', 'town', 'Towns', API.aggs2sb(data.aggregations.Towns.buckets));
     API.createSearchBox('search-nav-box-sub-payments-type', 'sub_payments_type', 'Sub Payments Type', API.aggs2sb(data.aggregations["Sub Payments Type"].buckets));
+    
+    if ($('.hidden-sm-up').is(':visible')) {
+        $('.snb-items').removeClass('show');
+    }
   }
   
   API.updatePaginationDisplay = function(numResults) {
@@ -370,7 +376,7 @@ var API = (function(API, $, undefined) {
     API.createSearchBox('search-nav-box-years', 'year', 'Years', YEARS_DEFAULT_VALUES);
     API.createSearchBox('search-nav-box-amount', 'amount_euro_gte', 'Amount', AMOUNT_DEFAULT_VALUES);
     API.loadData();
-
+    
     $('#search-btn').click(function(e) {
       CURRENT_PAGE = 1;
       API.loadData();

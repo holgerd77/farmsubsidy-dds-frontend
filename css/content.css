@@ -42,10 +42,11 @@ body {
   border: 3px solid #66d471; }
   .search-nav-box .snb-head {
     background: #66d471;
+    padding: 0.4rem 0.7rem 0.4rem 0.7rem; }
+  .search-nav-box .snb-head a {
     font-size: 1.0rem;
     font-weight: bold;
-    color: #fff;
-    padding: 0.4rem 0.7rem 0.4rem 0.7rem; }
+    color: #fff; }
   .search-nav-box .snb-items {
     padding: 0.7rem;
     font-size: 0.9rem;
