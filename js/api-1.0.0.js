@@ -94,12 +94,14 @@ var API = (function(API, $, undefined) {
   API.createSearchBox = function(id, param, title, v_list) {
     $('#'+id).empty();
     var $ul = $('<ul class="list-unstyled snb-items collapse show" id="sb-choices-' + id + '"></ul>');
+    var displayActive = '';
     for (var i=0; i<v_list.length; i++) {
       var display = v_list[i][0];
       var value = v_list[i][1];
       var $a = $('<a href="#"></a>');
       if (value === API.params[param]) {
         $a.addClass('sn-active');
+        displayActive = display;
       }
       $a.text(display);
       $a.data('value', value);
@@ -116,9 +118,9 @@ var API = (function(API, $, undefined) {
       $a.appendTo($li);
       $li.appendTo($ul);
     }
-    var $sh = $('<div class="snb-head"></di>');
+    var $sh = $('<div class="snb-head"></div>');
     var titleHTML = '<a data-toggle="collapse" href="#sb-choices-' + id + '" aria-expanded="true">';
-    titleHTML += title + '<span style="float:right;"><i class="fa fa-caret-down"></i></span></a>';
+    titleHTML += title + '<span class="hidden-sm-up">: <span class="snb-head-selected">' + displayActive + '</span></span><span style="float:right;"><i class="fa fa-caret-down"></i></span></a>';
     $sh.html(titleHTML);
     
     var $snb = $('<div class="search-nav-box"></div>');
@@ -143,30 +145,28 @@ var API = (function(API, $, undefined) {
     
     if (sps) {
       var $elem = $('<span class="badge badge-pill badge-default">' + sps.length + '</span>');
-      if (c.nc_symbol != '') {
-        $elem.attr('data-toggle', 'popover');
-        $elem.attr('data-placement', 'top');
-        $elem.attr('data-title', 'Sub Payments');
-        if (sps.length > 0) {
-          var content = '<table class="table">'
-          $.each(sps, function(index, sp) {
-            content += '<tr>';
-            content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
-            content += '<td class="text-right">';
-            content += '<span style="white-space: nowrap;';
-            if (c.nc_symbol != '') {
-              content += 'color:rgb(80, 128, 193);font-style:italic;';
-            }
-            content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
-            content += '</td>';
-            content += '</tr>';
-          });
-          content += '</table>';
-        } else {
-          var content = 'No information on sub payments available.';
-        }
-        $elem.attr('data-content', content);
+      $elem.attr('data-toggle', 'popover');
+      $elem.attr('data-placement', 'top');
+      $elem.attr('data-title', 'Sub Payments');
+      if (sps.length > 0) {
+        var content = '<table class="table">'
+        $.each(sps, function(index, sp) {
+          content += '<tr>';
+          content += '<td>' + $('<p>' + sp.name + '</p>').text() + '</td>';
+          content += '<td class="text-right">';
+          content += '<span style="white-space: nowrap;';
+          if (c.nc_symbol != '') {
+            content += 'color:rgb(80, 128, 193);font-style:italic;';
+          }
+          content += '">' + API.formatCurrency(sp.amount) + ' €</span>';
+          content += '</td>';
+          content += '</tr>';
+        });
+        content += '</table>';
+      } else {
+        var content = 'No information on sub payments available.';
       }
+      $elem.attr('data-content', content);
     } else {
       var $elem = $('');
     }
