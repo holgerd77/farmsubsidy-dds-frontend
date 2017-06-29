@@ -292,7 +292,9 @@ var API = (function(API, $, undefined) {
       
       $td = $('<td></td>');
       $td.addClass('text-center');
-      $td.html('<span class="flag-icon flag-icon-' + item['country'].toLowerCase() + '"></span>');
+      var $html = '<span data-toggle="tooltip" data-placement="top" ';
+      $html += 'title="' + c.name + '" class="flag-icon flag-icon-' + item['country'].toLowerCase() + '"></span>';
+      $td.html($html);
       $td.appendTo($tr);
       
       $td = $('<td></td>');
