@@ -42,7 +42,7 @@
             <h4>Searching European Farm Subsidies since 2017.</h4>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="search-header-navi">
           <div class="col-md-7 col-lg-5 offset-lg-2">
             <div class="input-group">
               <input type="text" id="search-input" class="form-control" placeholder="Search for Recipient, Town or ZIP Code">
@@ -87,10 +87,13 @@
         var page = API.getUrlParameter('page');
         
         if (page == 'about') {
+          $('#search-header-navi').hide();
           $('#content').load("html/about.html");
         } else if (page == 'faq') {
+          $('#search-header-navi').hide();
           $('#content').load("html/faq.html");
         } else {
+          $('#search-header-navi').show();
           $('#content').load("html/main.html");
           $.ajax({
             url: API_URL + COUNTRIES_ENDPOINT,

@@ -203,16 +203,16 @@ var API = (function(API, $, undefined) {
     action += 'style="font-size: 0.9rem;" class="dropdown-item">Google</a>';
     $(action).appendTo($menu);
     
-    var action = '<a href="https://' + c.language_code + '.wikipedia.org/w/index.php?search=' + encodeURIComponent(item['name']) + '" target="_blank"';
-    action += 'style="font-size: 0.9rem;" class="dropdown-item">Wikipedia (' + c.language_code + ')</a>';
-    $(action).appendTo($menu);
-    
     if (item['name_en']) {
       var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name_en']) + '" target="_blank"';
       action += 'style="font-size: 0.9rem;" class="dropdown-item">Google (en)</a>';
       $(action).appendTo($menu);
     }
     $('<div class="dropdown-divider"></div>').appendTo($menu);
+    
+    var action = '<a href="https://' + c.language_code + '.wikipedia.org/w/index.php?search=' + encodeURIComponent(item['name']) + '" target="_blank"';
+    action += 'style="font-size: 0.9rem;" class="dropdown-item">Wikipedia (' + c.language_code + ')</a>';
+    $(action).appendTo($menu);
     
     var action = '<a href="https://opencorporates.com/companies?jurisdiction_code=&q=' + encodeURIComponent(item['name']) + '" target="_blank"';
     action += 'style="font-size: 0.9rem;" class="dropdown-item">OpenCorporates</a>';
