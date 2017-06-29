@@ -193,7 +193,7 @@ var API = (function(API, $, undefined) {
     return $elem;
   };
   
-  API.getActionDDDisplayElem = function(item) {
+  API.getActionDDDisplayElem = function(item, c) {
     var $actionDD = $('<div class="btn-group"></div>');
     var $btn = $('<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-search"></i></button>');
     $btn.appendTo($actionDD);
@@ -201,6 +201,10 @@ var API = (function(API, $, undefined) {
     
     var action = '<a href="http://www.google.com?#q=' + encodeURIComponent(item['name']) + '" target="_blank"';
     action += 'style="font-size: 0.9rem;" class="dropdown-item">Google</a>';
+    $(action).appendTo($menu);
+    
+    var action = '<a href="https://' + c.language_code + '.wikipedia.org/w/index.php?search=' + encodeURIComponent(item['name']) + '" target="_blank"';
+    action += 'style="font-size: 0.9rem;" class="dropdown-item">Wikipedia (' + c.language_code + ')</a>';
     $(action).appendTo($menu);
     
     if (item['name_en']) {
@@ -320,7 +324,7 @@ var API = (function(API, $, undefined) {
       $td.appendTo($tr);
       
       $td = $('<td></td>');
-      var $actionDD = API.getActionDDDisplayElem(item);
+      var $actionDD = API.getActionDDDisplayElem(item, c);
       $actionDD.appendTo($td);
       $td.appendTo($tr);
       
