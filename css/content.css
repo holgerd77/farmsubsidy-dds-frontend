@@ -35,6 +35,10 @@ body {
   #content .derived-amount {
     color: #5080c1;
     font-style: italic; }
+  #content h4 i {
+    color: #66d471; }
+  #content .about-card {
+    margin-bottom: 7px; }
 
 #footer {
   color: #fff;

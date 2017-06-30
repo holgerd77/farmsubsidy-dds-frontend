@@ -56,6 +56,12 @@ body {
     color: $derived-amount;
     font-style: italic;
   }
+  h4 i {
+    color: $fs;
+  }
+  .about-card {
+    margin-bottom: 7px;
+  }
 }
 
 #footer {
